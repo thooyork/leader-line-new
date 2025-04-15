@@ -22,6 +22,10 @@
   ],
   "main": "leader-line.min.js",
   "types": "types/index.d.ts",
+  "files": [
+    "leader-line.min.js",
+    "types"
+  ],
   "devDependencies": {
     "anim-event": "^1.0.15",
     "cheerio": "^1.0.0-rc.2",
