@@ -907,7 +907,7 @@
     if (!baseDocument.getElementById(DEFS_ID)) { // Add svg defs
       defsSvg = (new window.DOMParser()).parseFromString(DEFS_HTML, 'image/svg+xml');
       baseDocument.body.appendChild(defsSvg.documentElement);
-      pathDataPolyfill(window);
+      pathDataPolyfill(window, IS_GECKO);
     }
   }
 
