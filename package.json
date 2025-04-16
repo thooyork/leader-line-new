@@ -5,6 +5,17 @@
   "author": {
     "name": "anseki"
   },
+  "homepage": "https://github.com/anseki/leader-line",
+  "contributors": [
+    {
+      "name": "II-alex-II",
+      "email": "radchenko.oskh@gmail.com"
+    },
+    {
+      "name": "thooyork",
+      "email": "thooyork@smart-sign.com"
+    }
+  ],
   "description": "Draw a leader line in your web page. Export lib",
   "keywords": [
     "leader",

@@ -40,7 +40,7 @@ module.exports = grunt => {
     }, {});
 
   function minCss(content) {
-    return (new CleanCSS({keepSpecialComments: 0})).minify(content).styles;
+    return (new CleanCSS({ keepSpecialComments: 0 })).minify(content).styles;
   }
 
   function minJs(content) {
@@ -56,14 +56,14 @@ module.exports = grunt => {
             let $ = cheerio.load(content), defsSrc = '',
               codeSrc = {
                 SYMBOLS: {},
-                PLUG_KEY_2_ID: {behind: definedVar.PLUG_BEHIND},
+                PLUG_KEY_2_ID: { behind: definedVar.PLUG_BEHIND },
                 PLUG_2_SYMBOL: {}
               }, cssSrc;
 
             function getCode(value) {
               let matches;
               return typeof value === 'object' ?
-                  `{${Object.keys(value).map(prop => `${prop}:${getCode(value[prop])}`).join(',')}}` :
+                `{${Object.keys(value).map(prop => `${prop}:${getCode(value[prop])}`).join(',')}}` :
                 typeof value === 'string' ? (
                   (matches = /^\f(.+)\x07$/.exec(value)) ? // eslint-disable-line no-control-regex
                     matches[1] : `'${value}'`
@@ -79,7 +79,7 @@ module.exports = grunt => {
                 props = (symbol.attr('class') + '').split(' ');
                 defsSrc += $.xml(symbol.attr('id', elmId).removeAttr('class'));
 
-                codeSrc.SYMBOLS[id] = {elmId: elmId};
+                codeSrc.SYMBOLS[id] = { elmId: elmId };
                 props.forEach(prop => {
                   let matches;
                   if ((matches = prop.match(/prop\-([^\s]+)/))) {
@@ -108,7 +108,7 @@ module.exports = grunt => {
                 codeSrc.SYMBOLS[id].overhead = noOverhead ? 0 : bBox.right;
 
                 if ((outlineBase = $('.outline-base', elm)).length &&
-                    (outlineMax = $('.outline-max', elm)).length) {
+                  (outlineMax = $('.outline-max', elm)).length) {
                   codeSrc.SYMBOLS[id].outlineBase = parseFloat(outlineBase.attr('stroke-width')) / 2;
                   codeSrc.SYMBOLS[id].outlineMax =
                     parseFloat(outlineMax.attr('stroke-width')) / 2 / codeSrc.SYMBOLS[id].outlineBase;
@@ -120,13 +120,13 @@ module.exports = grunt => {
             });
 
             cssSrc = minCss(
-              fs.readFileSync(CSS_PATH, {encoding: 'utf8'}).trim().replace(/^\s*@charset\s+[^;]+;/gm, ''));
+              fs.readFileSync(CSS_PATH, { encoding: 'utf8' }).trim().replace(/^\s*@charset\s+[^;]+;/gm, ''));
 
             // some version of cheerio have problem: <tag></tag> -> <tag/>
             defsSrc = defsSrc.replace(/<([^>\s]+)([^>]*)><\/\1>/g, '<$1$2/>');
             code.DEFS_HTML = '\'' +
               htmlclean(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="${DEFS_ID}">` +
-                  `<style><![CDATA[${cssSrc}]]></style><defs>${defsSrc}</defs></svg>`)
+                `<style><![CDATA[${cssSrc}]]></style><defs>${defsSrc}</defs></svg>`)
                 .replace(/\'/g, '\\\'') + '\'';
             Object.keys(DEFINED_VAR).forEach(codeVar => { code[codeVar] = getCode(DEFINED_VAR[codeVar]); });
             Object.keys(codeSrc).forEach(codeVar => { code[codeVar] = getCode(codeSrc[codeVar]); });
@@ -162,12 +162,21 @@ module.exports = grunt => {
           handlerByContent: content => {
             const reEXPORT = /^[\s\S]*?@EXPORT@\s*(?:\*\/\s*)?([\s\S]*?)\s*(?:\/\*\s*|\/\/\s*)?@\/EXPORT@[\s\S]*$/;
             PACK_LIBS.forEach(keyPath => {
-              code[keyPath[0]] = fs.readFileSync(pathUtil.join(SRC_DIR_PATH, keyPath[1]), {encoding: 'utf8'})
+              code[keyPath[0]] = fs.readFileSync(pathUtil.join(SRC_DIR_PATH, keyPath[1]), { encoding: 'utf8' })
                 .replace(keyPath[2] || reEXPORT, '$1');
             });
 
             const banner = `/*! ${PKG.title || PKG.name} v${PKG.version} (c) ${PKG.author.name} ${PKG.homepage} */\n`;
-            return banner + minJs(preProc.removeTag('DEBUG',
+
+            let contributorsLine = '';
+            if (Array.isArray(PKG.contributors) && PKG.contributors.length > 0) {
+              const contributorNames = PKG.contributors.map(c =>
+                typeof c === 'string' ? c : c.name
+              ).filter(Boolean);
+              contributorsLine = `/* Contributors: ${contributorNames.join(', ')} */\n`;
+            }
+
+            return banner + contributorsLine + minJs(preProc.removeTag('DEBUG',
               content.replace(/@INCLUDE\[code:([^\n]+?)\]@/g,
                 (s, codeKey) => {
                   if (typeof code[codeKey] !== 'string') {

@@ -9,7 +9,6 @@
 /* exported LeaderLine */
 /* eslint no-underscore-dangle: [2, {"allow": ["_id"]}] */
 /* global traceLog:false */
-console.log("🚀 leader-line-new used!");
 
 ;var LeaderLine = (function() { // eslint-disable-line no-extra-semi
   'use strict';
