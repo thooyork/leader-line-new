@@ -1,3 +1,29 @@
+# This is a fork of https://github.com/II-alex-II/leader-line-new but with SVGPath error fixed!
+
+If you use **ngx-leader-line** (https://github.com/antonsimola/ngx-leader-line) in your Angular application,
+wich depends on leader-line-new (https://github.com/II-alex-II/leader-line-new) you will face an error in Firefox.
+The error though is not in ngx-leader-line but in its dependency leader-line-new.
+
+So in order to use ngx-leader-line, you can override its dependency with this fixed fork, like so:
+
+package.json:
+```
+ "overrides": {
+    ...
+    "ngx-leader-line": {
+      "leader-line-new": "git+ssh://git@github.com/thooyork/leader-line-new.git"
+    }
+  }
+```
+
+ I already opened a pull-request on the original repo, but I guess that leader-line-new angular-wrapper is not longer maintained. (which is a shame because it's a really good project...)
+
+ 
+
+------------------------
+
+
+
 # Thank [@anseki](https://github.com/anseki) very much!
 
 -[x] Add export
